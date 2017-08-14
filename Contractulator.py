@@ -3,10 +3,21 @@ import datetime
 contractNum = 0
 startContracts = []
 timeContracts = []
+timeActive = []
 avgContraction = 0
+avgActiveCont = 0
 frequency = 0
 freqContracts = []
+freqActive = []
 avgFrequency = 0
+avgActiveFreq = 0
+activeBegin = 0
+#For 5-1-1, testContraction = 60
+testContraction = 5
+#For 5-1-1, testFrequency = 300
+testFrequency = 300
+#For 5-1-1, testRange = 3600
+testRange = 15
 
 print("Welcome to the Contractulator. Let's see if you're about to have a baby!")
 print('-- Remember the 5-1-1 rule --')
@@ -48,7 +59,16 @@ try:
         timeContracts.append(endTime.seconds)
         print('Contraction was %d seconds long' % endTime.seconds)
 
-        #Calculate averages
+        #Determine if active labor tracking should begin
+        if timeContracts[(contractNum - 1)] >= testContraction and\
+           activeBegin == 0:
+            activeBegin = startContracts[(contractNum - 1)]
+            print('* Begin tracking for active labor *')
+        elif timeContracts[(contractNum - 1)] >= testContraction:
+            timeActive.append(timeContracts[(contractNum - 1)])
+            freqActive.append(freqContracts[(contractNum - 2)])
+
+        #Calculate general averages
         def avg(l):
             return sum(l, 0.0) / len(l)
         def convertToMin(t):
@@ -59,10 +79,19 @@ try:
         dispAvgContract = convertToMin(avgContraction)
         avgFrequency = int(avg(freqContracts))
         dispAvgFrequency = convertToMin(avgFrequency)
-        print('===> Average contraction is %s long and %s apart!! <===' % (dispAvgContract, dispAvgFrequency))
-        if avgContraction > 60 and\
-           avgFrequency < 300:
-            print('CALL THE DOCTOR! It is time to go to the hospital!!!')
+
+        #Calculate active labor averages
+        if len(timeActive) > 1 and\
+           len(freqActive) > 1:
+            avgActiveCont = int(avg(timeActive))
+            avgActiveFreq = int(avg(freqActive))
+        
+        #Print averages & current status
+        print('==> Average contraction is %s long and %s apart!! <==' % (dispAvgContract, dispAvgFrequency))
+        if avgActiveCont > testContraction and\
+           avgActiveFreq < testFrequency and\
+           (startContracts[(contractNum - 1)] - activeBegin).seconds > testRange:
+            print('********CALL THE DOCTOR! IT IS TIME TO GO TO THE HOSPITAL! You are now in active labor.********')
         else:
             print('Relax. You are still in early labor')
             
