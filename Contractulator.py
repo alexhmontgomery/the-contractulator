@@ -13,11 +13,11 @@ avgFrequency = 0
 avgActiveFreq = 0
 activeBegin = 0
 #For 5-1-1, testContraction = 60
-testContraction = 4
+testContraction = 60
 #For 5-1-1, testFrequency = 300
 testFrequency = 300
 #For 5-1-1, testRange = 3600
-testRange = 15
+testRange = 3600
 
 print("Welcome to the Contractulator. Let's see if you're about to have a baby!")
 print('-- Remember the 5-1-1 rule --')
